@@ -4,15 +4,15 @@ namespace App\Http\Controllers;
 
 use App\Models\Comentario;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Session;
+
 
 class ComentarioController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
+   
     public function index()
     {
-        //
+        
     }
 
     /**
@@ -28,7 +28,12 @@ class ComentarioController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $r->validate(['publicacao_id'=>'required','comentario'=>'required']);
+        $uid = Session::get('usuario_id');
+        if(!$uid) return redirect()->back()->withErrors('Faça login');
+         Comentario::create(['publicacao_id'=>$r->publicacao_id,'usuario_id'=>$uid,'comentario'=>$r->comentario]);
+            return redirect()->back();
+
     }
 
     /**
@@ -52,7 +57,11 @@ class ComentarioController extends Controller
      */
     public function update(Request $request, Comentario $comentario)
     {
-        //
+        $uid = Session::get('usuario_id');
+         if(!$uid || $comentario->usuario_id != $uid) return redirect()->back()->withErrors('não autorizado');
+      $r->validate(['comentario'=>'required']);
+    $comentario->update(['comentario'=>$r->comentario]);
+       return redirect()->back();
     }
 
     /**
@@ -60,6 +69,9 @@ class ComentarioController extends Controller
      */
     public function destroy(Comentario $comentario)
     {
-        //
+        $uid = Session::get('usuario_id');
+       if(!$uid || $comentario->usuario_id != $uid) return redirect()->back()->withErrors('não autorizado');
+      $comentario->delete();
+         return redirect()->back();
     }
 }

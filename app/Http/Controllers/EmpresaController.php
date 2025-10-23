@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Empresa;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
 
 class EmpresaController extends Controller
 {
@@ -12,28 +13,28 @@ class EmpresaController extends Controller
      */
     public function index()
     {
-        //
+        $empresas = Empresa::all(); 
+        return view('empresas.index', compact('empresas')); 
     }
-
-    /**
-     * Show the form for creating a new resource.
-     */
+        
+    
     public function create()
     {
-        //
+        return view('empresas.create'); 
     }
 
-    /**
-     * Store a newly created resource in storage.
-     */
+    
     public function store(Request $request)
     {
-        //
+        $r->validate(['nome'=>'required']);
+        $logo = null;
+        if($r->hasFile('logo')) $logo = 'storage/'.$r->file('logo')->store('anexos','public');
+        Empresa::create(['nome'=>$r->nome,'cnpj'=>$r->cnpj,'descricao'=>$r->descricao,'logo'=>$logo]);
+        return redirect()->route('empresas.index');
+
     }
 
-    /**
-     * Display the specified resource.
-     */
+    
     public function show(Empresa $empresa)
     {
         //
@@ -44,7 +45,7 @@ class EmpresaController extends Controller
      */
     public function edit(Empresa $empresa)
     {
-        //
+        return view('empresas.edit',compact('empresa'));
     }
 
     /**
@@ -52,7 +53,11 @@ class EmpresaController extends Controller
      */
     public function update(Request $request, Empresa $empresa)
     {
-        //
+        $r->validate(['nome'=>'required']);
+        if($r->hasFile('logo')) $empresa->logo = 'storage/'.$r->file('logo')->store('anexos','public');
+        $empresa->update($r->only(['nome','cnpj','descricao','logo']));
+        return redirect()->route('empresas.index');
+
     }
 
     /**
@@ -60,6 +65,7 @@ class EmpresaController extends Controller
      */
     public function destroy(Empresa $empresa)
     {
-        //
+        $empresa->delete(); return
+        redirect()->route('empresas.index');
     }
 }
