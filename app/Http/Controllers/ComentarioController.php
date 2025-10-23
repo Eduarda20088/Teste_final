@@ -3,75 +3,52 @@
 namespace App\Http\Controllers;
 
 use App\Models\Comentario;
+use App\Models\Publicacao;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Session;
-
 
 class ComentarioController extends Controller
 {
-   
-    public function index()
-    {
-        
+    public function index() {
+        $comentarios = Comentario::with(['usuario','publicacao'])->paginate(20);
+        return view('comentarios.index', compact('comentarios'));
     }
 
-    /**
-     * Show the form for creating a new resource.
-     */
-    public function create()
-    {
-        //
+    public function create() {
+        // se quiser criar manualmente
+        return view('comentarios.create');
     }
 
-    /**
-     * Store a newly created resource in storage.
-     */
-    public function store(Request $request)
-    {
-        $r->validate(['publicacao_id'=>'required','comentario'=>'required']);
-        $uid = Session::get('usuario_id');
-        if(!$uid) return redirect()->back()->withErrors('Faça login');
-         Comentario::create(['publicacao_id'=>$r->publicacao_id,'usuario_id'=>$uid,'comentario'=>$r->comentario]);
-            return redirect()->back();
+    public function store(Request $request) {
+        $data = $request->validate([
+            'publicacao_id' => 'required|exists:publicacoes,id',
+            'usuario_id' => 'required|exists:usuarios,id',
+            'comentario' => 'required|string'
+        ]);
 
+        Comentario::create($data);
+        return redirect()->route('publicacoes.show', $data['publicacao_id'])->with('success','Comentário adicionado.');
     }
 
-    /**
-     * Display the specified resource.
-     */
-    public function show(Comentario $comentario)
-    {
-        //
+    public function show(Comentario $comentario) {
+        return view('comentarios.show', compact('comentario'));
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(Comentario $comentario)
-    {
-        //
+    public function edit(Comentario $comentario) {
+        return view('comentarios.edit', compact('comentario'));
     }
 
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(Request $request, Comentario $comentario)
-    {
-        $uid = Session::get('usuario_id');
-         if(!$uid || $comentario->usuario_id != $uid) return redirect()->back()->withErrors('não autorizado');
-      $r->validate(['comentario'=>'required']);
-    $comentario->update(['comentario'=>$r->comentario]);
-       return redirect()->back();
+    public function update(Request $request, Comentario $comentario) {
+        $data = $request->validate([
+            'comentario' => 'required|string'
+        ]);
+
+        $comentario->update($data);
+        return redirect()->route('publicacoes.show', $comentario->publicacao_id)->with('success','Comentário atualizado.');
     }
 
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(Comentario $comentario)
-    {
-        $uid = Session::get('usuario_id');
-       if(!$uid || $comentario->usuario_id != $uid) return redirect()->back()->withErrors('não autorizado');
-      $comentario->delete();
-         return redirect()->back();
+    public function destroy(Comentario $comentario) {
+        $pid = $comentario->publicacao_id;
+        $comentario->delete();
+        return redirect()->route('publicacoes.show', $pid)->with('success','Comentário removido.');
     }
 }
