@@ -1,24 +1,36 @@
 <?php
 
-use App\Http\Controllers\{
-    UsuarioController,
-    EmpresaController,
-    PublicacaoController,
-    ComentarioController,
-    LikeController,
-    DeslikeController
-};
+use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\UsuarioController;
+use App\Http\Controllers\EmpresaController;
+use App\Http\Controllers\PublicacaoController;
+use App\Http\Controllers\ComentarioController;
+use App\Http\Controllers\LikeController;
+use App\Http\Controllers\DeslikeController;
+use App\Http\Controllers\AvaliacaoController;
 
-Route::get('/', fn() => redirect()->route('publicacoes.index'));
+// 🏠 Página inicial
+Route::get('/', function () {
+    return view('layouts.home');
+})->name('home');
 
+// 👤 Usuários
 Route::resource('usuarios', UsuarioController::class);
+
+// 🏢 Empresas
 Route::resource('empresas', EmpresaController::class);
+
+// 📰 Publicações
 Route::resource('publicacoes', PublicacaoController::class);
-Route::resource('comentarios', ComentarioController::class)->except(['create']); // create opcional
 
-// likes / deslikes (store e destroy)
-Route::post('likes', [LikeController::class,'store'])->name('likes.store');
-Route::delete('likes/{id}', [LikeController::class,'destroy'])->name('likes.destroy');
+// 💬 Comentários
+Route::resource('comentarios', ComentarioController::class)->except(['create']);
 
-Route::post('deslikes', [DeslikeController::class,'store'])->name('deslikes.store');
-Route::delete('deslikes/{id}', [DeslikeController::class,'destroy'])->name('deslikes.destroy');
+// 👍 Likes
+Route::resource('likes', LikeController::class)->only(['index','create','store','show','destroy']);
+
+// 👎 Deslikes
+Route::resource('deslikes', DeslikeController::class)->only(['index','create','store','show','destroy']);
+
+// ⭐ Avaliações
+Route::resource('avaliacoes', AvaliacaoController::class);

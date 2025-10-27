@@ -14,19 +14,16 @@ class ComentarioController extends Controller
     }
 
     public function create() {
-        // se quiser criar manualmente
-        return view('comentarios.create');
+         $usuarios = Usuario::all(); $publicacoes = Publicacao::all(); 
+         return view('comentarios.create', compact('usuarios','publicacoes'));
     }
 
     public function store(Request $request) {
-        $data = $request->validate([
-            'publicacao_id' => 'required|exists:publicacoes,id',
-            'usuario_id' => 'required|exists:usuarios,id',
-            'comentario' => 'required|string'
-        ]);
+        
+        $data = $request->validate([ 'comentario'=>'required|string','usuario_id'=>'required|exists:usuarios,id','publicacao_id'=>'required|exists:publicacoes,id' ]);
 
         Comentario::create($data);
-        return redirect()->route('publicacoes.show', $data['publicacao_id'])->with('success','Comentário adicionado.');
+      return redirect()->route('comentarios.index')->with('success','Comentário criado.');
     }
 
     public function show(Comentario $comentario) {
@@ -34,21 +31,21 @@ class ComentarioController extends Controller
     }
 
     public function edit(Comentario $comentario) {
-        return view('comentarios.edit', compact('comentario'));
+        $usuarios = Usuario::all(); $publicacoes = Publicacao::all(); 
+        return view('comentarios.edit', compact('comentario','usuarios','publicacoes')); 
     }
 
     public function update(Request $request, Comentario $comentario) {
-        $data = $request->validate([
-            'comentario' => 'required|string'
-        ]);
+        
+        $data = $request->validate([ 'comentario'=>'required|string','usuario_id'=>'required|exists:usuarios,id','publicacao_id'=>'required|exists:publicacoes,id' ]);
 
         $comentario->update($data);
-        return redirect()->route('publicacoes.show', $comentario->publicacao_id)->with('success','Comentário atualizado.');
+      return redirect()->route('comentarios.index')->with('success','Comentário atualizado.');
+
     }
 
     public function destroy(Comentario $comentario) {
-        $pid = $comentario->publicacao_id;
-        $comentario->delete();
-        return redirect()->route('publicacoes.show', $pid)->with('success','Comentário removido.');
+      $comentario->delete(); return
+      redirect()->route('comentarios.index')->with('success','Comentário deletado.');
     }
 }
