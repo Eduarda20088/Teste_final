@@ -1,65 +1,43 @@
 <?php
 
 namespace App\Http\Controllers;
-
 use App\Models\Avaliacao;
+use App\Models\Usuario;
+use App\Models\Empresa;
 use Illuminate\Http\Request;
 
-class AvaliacaoController extends Controller
+class AvaliacaoController extends Controller 
 {
-    /**
-     * Display a listing of the resource.
-     */
-    public function index()
-    {
-        //
-    }
-
-    /**
-     * Show the form for creating a new resource.
-     */
-    public function create()
-    {
-        //
-    }
-
-    /**
-     * Store a newly created resource in storage.
-     */
-    public function store(Request $request)
-    {
-        //
-    }
-
-    /**
-     * Display the specified resource.
-     */
-    public function show(Avaliacao $avaliacao)
-    {
-        //
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(Avaliacao $avaliacao)
-    {
-        //
-    }
-
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(Request $request, Avaliacao $avaliacao)
-    {
-        //
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(Avaliacao $avaliacao)
-    {
-        //
-    }
+     
+  public function index() { 
+    $avaliacoes = Avaliacao::with(['usuario','empresa'])->paginate(20); 
+    return view('avaliacoes.index', compact('avaliacoes')); 
+   }
+  public function create() { 
+    $usuarios = Usuario::all(); 
+    $empresas = Empresa::all(); 
+    return view('avaliacoes.create', compact('usuarios','empresas')); 
+  }
+  public function store(Request $request) {
+    $data = $request->validate([ 'usuario_id'=>'required|exists:usuarios,id','empresa_id'=>'required|exists:empresas,id','nota'=>'required|integer|min:1|max:5','comentario'=>'nullable|string' ]);
+    Avaliacao::create($data);
+    return redirect()->route('avaliacoes.index')->with('success','Avaliação criada.');
+  }
+  public function show(Avaliacao $avaliacao) { 
+    return view('avaliacoes.show', compact('avaliacao')); 
+  }
+  public function edit(Avaliacao $avaliacao) { 
+    $usuarios = Usuario::all(); 
+    $empresas = Empresa::all(); 
+    return view('avaliacoes.edit', compact('avaliacao','usuarios','empresas')); 
+  }
+  public function update(Request $request, Avaliacao $avaliacao) {
+   $data = $request->validate([ 'usuario_id'=>'required|exists:usuarios,id','empresa_id'=>'required|exists:empresas,id','nota'=>'required|integer|min:1|max:5','comentario'=>'nullable|string' ]);
+   $avaliacao->update($data);
+   return redirect()->route('avaliacoes.index')->with('success','Avaliação atualizada.');
+  }
+  public function destroy(Avaliacao $avaliacao) { 
+    $avaliacao->delete(); 
+    return redirect()->route('avaliacoes.index')->with('success','Avaliação removida.'); 
+}
 }

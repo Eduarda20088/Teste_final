@@ -1,65 +1,35 @@
 <?php
 
 namespace App\Http\Controllers;
-
-use App\Models\Desike;
+use App\Models\Deslike;
+use App\Models\Like;
+use App\Models\Usuario;
+use App\Models\Publicacao;
 use Illuminate\Http\Request;
 
-class DesikeController extends Controller
+class DeslikeController extends Controller 
 {
-    /**
-     * Display a listing of the resource.
-     */
-    public function index()
-    {
-        //
-    }
 
-    /**
-     * Show the form for creating a new resource.
-     */
-    public function create()
-    {
-        //
-    }
-
-    /**
-     * Store a newly created resource in storage.
-     */
-    public function store(Request $request)
-    {
-        //
-    }
-
-    /**
-     * Display the specified resource.
-     */
-    public function show(Desike $desike)
-    {
-        //
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(Desike $desike)
-    {
-        //
-    }
-
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(Request $request, Desike $desike)
-    {
-        //
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(Desike $desike)
-    {
-        //
-    }
+   public function index() { 
+    $deslikes = Deslike::with(['usuario','publicacao'])->paginate(50); 
+    return view('deslikes.index', compact('deslikes')); 
+ }
+   public function create() { 
+    $usuarios = Usuario::all(); 
+    $publicacoes = Publicacao::all(); 
+    return view('deslikes.create',compact('usuarios','publicacoes')); 
+}
+   public function store(Request $request) {
+    $data = $request->validate(['usuario_id'=>'required|exists:usuarios,id','publicacao_id'=>'required|exists:publicacoes,id' ]);
+    Like::where($data)->delete();
+    Deslike::firstOrCreate($data);
+    return redirect()->route('deslikes.index')->with('success','Deslike adicionado.');
+  }
+   public function show(Deslike $deslike) { 
+    return view('deslikes.show', compact('deslike')); 
+ }
+   public function destroy(Deslike $deslike) { 
+    $deslike->delete(); 
+    return redirect()->route('deslikes.index')->with('success','Deslike removido.'); 
+}
 }

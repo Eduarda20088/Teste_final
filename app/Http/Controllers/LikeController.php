@@ -1,65 +1,35 @@
 <?php
 
 namespace App\Http\Controllers;
-
 use App\Models\Like;
+use App\Models\Deslike;
+use App\Models\Usuario;
+use App\Models\Publicacao;
 use Illuminate\Http\Request;
 
 class LikeController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
-    public function index()
-    {
-        //
-    }
-
-    /**
-     * Show the form for creating a new resource.
-     */
-    public function create()
-    {
-        //
-    }
-
-    /**
-     * Store a newly created resource in storage.
-     */
-    public function store(Request $request)
-    {
-        //
-    }
-
-    /**
-     * Display the specified resource.
-     */
-    public function show(Like $like)
-    {
-        //
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(Like $like)
-    {
-        //
-    }
-
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(Request $request, Like $like)
-    {
-        //
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(Like $like)
-    {
-        //
-    }
+  public function index() { 
+    $likes = Like::with(['usuario','publicacao'])->paginate(50); 
+    return view('likes.index', compact('likes')); 
+ }
+  public function create() { 
+    $usuarios = Usuario::all(); 
+    $publicacoes = Publicacao::all(); 
+    return view('likes.create', compact('usuarios','publicacoes'));
+  }
+  public function store(Request $request) {
+   $data = $request->validate(['usuario_id'=>'required|exists:usuarios,id','publicacao_id'=>'required|exists:publicacoes,id' ]);
+   Deslike::where($data)->delete();
+   Like::firstOrCreate($data);
+   return redirect()->route('likes.index')->with('success','Like adicionado.');
+  }
+  public function show(Like $like) { 
+    return view('likes.show', compact('like'));
+ }
+  public function destroy(Like $like) { 
+    $like->delete(); 
+    return redirect()->route('likes.index')->with('success','Like removido.'); 
 }
+}
+
