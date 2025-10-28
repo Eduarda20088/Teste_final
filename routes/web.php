@@ -1,27 +1,24 @@
 <?php
 
-use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\AlunoController;
-use App\Http\Controllers\ProfessorController;
-use App\Http\Controllers\CursoController;
+use App\Http\Controllers\UsuarioController;
+use App\Http\Controllers\EmpresaController;
+use App\Http\Controllers\PublicacaoController;
+use App\Http\Controllers\ComentarioController;
+use App\Http\Controllers\LikeController;
+use App\Http\Controllers\DeslikeController;
+use App\Http\Controllers\AvaliacaoController;
 
+// Página inicial
 Route::get('/', function () {
-    return view('welcome');
-});
+    return view('layouts.home');
+})->name('home');
 
-Route::get('/dashboard', function () {
-    return view('dashboard');
-})->middleware(['auth', 'verified'])->name('dashboard');
-
-Route::middleware('auth')->group(function () {
-    Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
-    Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
-    Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
-    Route::resource('alunos', AlunoController::class);
-Route::resource('professores', ProfessorController::class);
-Route::resource('cursos', CursoController::class);
-});
-
-
-require __DIR__.'/auth.php';
+// Rotas de recursos
+Route::resource('usuarios', UsuarioController::class);
+Route::resource('empresas', EmpresaController::class);
+Route::resource('publicacoes', PublicacaoController::class);
+Route::resource('comentarios', ComentarioController::class);
+Route::resource('likes', LikeController::class);
+Route::resource('deslikes', DeslikeController::class);
+Route::resource('avaliacoes', AvaliacaoController::class);
