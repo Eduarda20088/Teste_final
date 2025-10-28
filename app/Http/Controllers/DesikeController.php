@@ -5,7 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Desike;
 use Illuminate\Http\Request;
 
-class DesikeController
+class DesikeController extends Controller
 {
     /**
      * Display a listing of the resource.
