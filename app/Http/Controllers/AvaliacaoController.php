@@ -1,43 +1,24 @@
 <?php
 
 namespace App\Http\Controllers;
-use App\Models\Avaliacao;
-use App\Models\Usuario;
-use App\Models\Empresa;
-use Illuminate\Http\Request;
 
-class AvaliacaoController extends Controller 
+use Illuminate\Http\Request;
+use App\Models\Avaliacao;
+use Illuminate\Support\Facades\Session;
+
+class AvaliacaoController extends Controller
 {
-     
-  public function index() { 
-    $avaliacoes = Avaliacao::with(['usuario','empresa'])->paginate(20); 
-    return view('avaliacoes.index', compact('avaliacoes')); 
-   }
-  public function create() { 
-    $usuarios = Usuario::all(); 
-    $empresas = Empresa::all(); 
-    return view('avaliacoes.create', compact('usuarios','empresas')); 
-  }
-  public function store(Request $request) {
-    $data = $request->validate([ 'usuario_id'=>'required|exists:usuarios,id','empresa_id'=>'required|exists:empresas,id','nota'=>'required|integer|min:1|max:5','comentario'=>'nullable|string' ]);
-    Avaliacao::create($data);
-    return redirect()->route('avaliacoes.index')->with('success','Avaliação criada.');
-  }
-  public function show(Avaliacao $avaliacao) { 
-    return view('avaliacoes.show', compact('avaliacao')); 
-  }
-  public function edit(Avaliacao $avaliacao) { 
-    $usuarios = Usuario::all(); 
-    $empresas = Empresa::all(); 
-    return view('avaliacoes.edit', compact('avaliacao','usuarios','empresas')); 
-  }
-  public function update(Request $request, Avaliacao $avaliacao) {
-   $data = $request->validate([ 'usuario_id'=>'required|exists:usuarios,id','empresa_id'=>'required|exists:empresas,id','nota'=>'required|integer|min:1|max:5','comentario'=>'nullable|string' ]);
-   $avaliacao->update($data);
-   return redirect()->route('avaliacoes.index')->with('success','Avaliação atualizada.');
-  }
-  public function destroy(Avaliacao $avaliacao) { 
-    $avaliacao->delete(); 
-    return redirect()->route('avaliacoes.index')->with('success','Avaliação removida.'); 
-}
+    public function store(Request $request)
+    {
+        $usuario = Session::get('usuario');
+
+        Avaliacao::create([
+            'usuario_id' => $usuario->id,
+            'empresa_id' => $request->empresa_id,
+            'nota' => $request->nota,
+            'comentario' => $request->comentario,
+        ]);
+
+        return redirect()->back();
+    }
 }
