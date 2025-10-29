@@ -11,7 +11,7 @@ use App\Http\Controllers\AvaliacaoController;
 
 // Página inicial
 Route::get('/', function () {
-    return view('layouts.home');
+    return view('home');
 })->name('home');
 
 // Rotas de recursos
