@@ -1,31 +1,23 @@
-@extends('layouts.app')
+@extends('layout.app')
 
 @section('content')
-<div class="container mx-auto max-w-md mt-10">
-    <h2 class="text-2xl font-bold text-center mb-6">Login</h2>
-
-    @if ($errors->any())
-        <div class="bg-red-100 p-3 mb-4 text-red-700 rounded">
-            {{ $errors->first() }}
-        </div>
+<div class="col-md-4 mx-auto coluna">
+    <h4 class="text-center fw-bold text-danger">Entrar</h4>
+    @if(session('erro'))
+        <div class="alert alert-danger">{{ session('erro') }}</div>
     @endif
-
     <form method="POST" action="{{ route('login.post') }}">
         @csrf
-        <div class="mb-4">
-            <label>Email:</label>
-            <input type="email" name="email" class="w-full border p-2 rounded" required>
+        <div class="mb-3">
+            <label>Email</label>
+            <input type="email" name="email" class="form-control">
         </div>
-        <div class="mb-4">
-            <label>Senha:</label>
-            <input type="password" name="password" class="w-full border p-2 rounded" required>
+        <div class="mb-3">
+            <label>Senha</label>
+            <input type="password" name="senha" class="form-control">
         </div>
-
-        <button class="bg-orange-600 text-white px-4 py-2 rounded w-full">Entrar</button>
-
-        <p class="text-center mt-4">Não tem conta?
-            <a href="{{ route('register') }}" class="text-blue-500">Cadastre-se</a>
-        </p>
+        <button type="submit" class="btn btn-danger w-100">Entrar</button>
+        <p class="mt-3 text-center">Não tem conta? <a href="{{ route('register') }}">Cadastre-se</a></p>
     </form>
 </div>
 @endsection

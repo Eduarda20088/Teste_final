@@ -3,39 +3,52 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>@yield('title', 'Site de Avaliações')</title>
+    <title>Sabor do Brasil</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <meta name="csrf-token" content="{{ csrf_token() }}">
     <style>
-        body { background-color: #fffaf1; }
-        nav.navbar { background-color: #ff9800; }
-        footer {
-            background-color: #ff9800;
-            color: white;
-            padding: 15px 0;
-            text-align: center;
-            position: fixed;
-            bottom: 0; left: 0; width: 100%;
+        body {
+            background-color: #fff8f0;
         }
-        .card { border-radius: 15px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); }
+        .navbar {
+            background-color: #b22222;
+        }
+        .navbar-brand, .nav-link, .text-brand {
+            color: white !important;
+        }
+        .card {
+            border-radius: 15px;
+        }
+        .coluna {
+            background: #fff;
+            border-radius: 15px;
+            padding: 15px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+        }
     </style>
 </head>
 <body>
-<nav class="navbar navbar-expand-lg navbar-dark">
-  <div class="container">
-    <a class="navbar-brand fw-bold" href="{{ url('/') }}">🍽️ FoodReview</a>
-    <div>
-      <a class="nav-link d-inline text-white" href="{{ route('usuarios.index') }}">Usuários</a>
-      <a class="nav-link d-inline text-white" href="{{ route('empresas.index') }}">Empresas</a>
-      <a class="nav-link d-inline text-white" href="{{ route('publicacoes.index') }}">Publicações</a>
-      <a class="nav-link d-inline text-white" href="{{ route('avaliacoes.index') }}">Avaliações</a>
+
+<nav class="navbar navbar-expand-lg">
+    <div class="container-fluid">
+        <a class="navbar-brand fw-bold" href="{{ route('dashboard') }}">🍛 Sabor do Brasil</a>
+        <div class="d-flex">
+            @if(Session::has('usuario'))
+                <span class="text-white me-3">Olá, {{ Session::get('usuario')->nome }}</span>
+                <a href="{{ route('logout') }}" class="btn btn-outline-light btn-sm">Sair</a>
+            @else
+                <a href="{{ route('login') }}" class="btn btn-outline-light btn-sm me-2">Entrar</a>
+                <a href="{{ route('register') }}" class="btn btn-light btn-sm">Cadastrar</a>
+            @endif
+        </div>
     </div>
-  </div>
 </nav>
 
-<div class="container mt-5 mb-5">
+<div class="container mt-4">
     @yield('content')
 </div>
 
-<footer>© {{ date('Y') }} FoodReview - Todos os direitos reservados.</footer>
+<script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+@stack('scripts')
 </body>
 </html>
