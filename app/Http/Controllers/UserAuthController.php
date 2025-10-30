@@ -8,7 +8,7 @@ use App\Models\Usuario;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Session;
 
-class AuthController extends Controller
+class UserAuthController extends Controller
 {
     public function showLogin()
     {

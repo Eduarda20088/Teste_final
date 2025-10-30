@@ -8,7 +8,7 @@ use App\Http\Controllers\ComentarioController;
 use App\Http\Controllers\LikeController;
 use App\Http\Controllers\DeslikeController;
 use App\Http\Controllers\AvaliacaoController;
-use App\Http\Controllers\AuthController;
+use App\Http\Controllers\UserAuthController;
 use App\Http\Controllers\DashboardController;
 
 /*
@@ -23,11 +23,12 @@ Route::get('/', function () {
 })->name('home');
 
 // Autenticação
-Route::get('/login', [AuthController::class, 'showLogin'])->name('login');
-Route::get('/register', [AuthController::class, 'showRegister'])->name('register');
-Route::post('/login', [AuthController::class, 'login'])->name('login.post');
-Route::post('/register', [AuthController::class, 'register'])->name('register.post');
-Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
+
+Route::get('/login', [UserAuthController::class, 'showLogin'])->name('login');
+Route::post('/login', [UserAuthController::class, 'login'])->name('login.post');
+Route::get('/register', [UserAuthController::class, 'showRegister'])->name('register');
+Route::post('/register', [UserAuthController::class, 'register'])->name('register.post');
+Route::get('/logout', [UserAuthController::class, 'logout'])->name('logout');
 
 /*
 |--------------------------------------------------------------------------
