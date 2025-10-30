@@ -23,7 +23,6 @@ Route::get('/', function () {
 })->name('home');
 
 // Autenticação
-
 Route::get('/login', [UserAuthController::class, 'showLogin'])->name('login');
 Route::post('/login', [UserAuthController::class, 'login'])->name('login.post');
 Route::get('/register', [UserAuthController::class, 'showRegister'])->name('register');
@@ -38,7 +37,8 @@ Route::get('/logout', [UserAuthController::class, 'logout'])->name('logout');
 Route::middleware('auth')->group(function () {
 
     // Dashboard principal
-    Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
+    Route::get('/dashboard', [DashboardController::class, 'index'])
+        ->name('dashboard');
 
     // CRUDs protegidos
     Route::resource('usuarios', UsuarioController::class);
