@@ -9,24 +9,21 @@ use Illuminate\Support\Facades\Session;
 
 class UserAuthController extends Controller
 {
-    // Exibe tela de login
     public function showLogin()
     {
         return view('auth.login');
     }
 
-    // Exibe tela de cadastro
     public function showRegister()
     {
         return view('auth.register');
     }
 
-    // Cadastro de usuário
     public function register(Request $request)
     {
         $request->validate([
             'nome' => 'required|string|max:100',
-            'email' => 'required|email|unique:usuarios,email',
+            'email' => 'required|email|unique:usuarios',
             'senha' => 'required|min:6|confirmed',
         ]);
 
@@ -36,15 +33,10 @@ class UserAuthController extends Controller
             'senha' => Hash::make($request->senha),
         ]);
 
-        // Guarda o usuário na sessão
-        Session::put('usuario_id', $usuario->id);
-        Session::put('usuario_nome', $usuario->nome);
-
-        // Redireciona pro dashboard
+        Session::put('usuario', $usuario);
         return redirect()->route('dashboard');
     }
 
-    // Login
     public function login(Request $request)
     {
         $request->validate([
@@ -58,18 +50,13 @@ class UserAuthController extends Controller
             return back()->with('erro', 'Credenciais inválidas');
         }
 
-        // Guarda dados na sessão
-        Session::put('usuario_id', $usuario->id);
-        Session::put('usuario_nome', $usuario->nome);
-
-        // Vai pro dashboard
+        Session::put('usuario', $usuario);
         return redirect()->route('dashboard');
     }
 
-    // Logout
     public function logout()
     {
-        Session::forget(['usuario_id', 'usuario_nome']);
+        Session::forget('usuario');
         return redirect()->route('login');
     }
 }

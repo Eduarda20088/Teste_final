@@ -1,25 +1,19 @@
-@extends('layouts.app')
-@section('title','Editar Usuário')
+@extends('layout.app')
+
 @section('content')
-  <h2>Editar Usuário</h2>
-   <form action="{{ route('usuarios.update',$usuario->id) }}" method="POST" enctype="multipart/form-data">
-@csrf @method('PUT')
-  <div class="mb-3">
-    <label>Nome</label>
-    <input name="nome" class="form-control" value="{{ $usuario->nome }}">
-</div>
-  <div class="mb-3">
-    <label>Email</label>
-    <input name="email" class="form-control" value="{{ $usuario->email }}">
-</div>
-  <div class="mb-3">
-    <label>Foto</label>
-    <input type="file" name="foto" class="form-control">
-</div>
-@if($usuario->foto)
-  <img src="{{ asset('storage/'.$usuario->foto) }}" width="120" class="rounded mt-2">
-@endif
-  <button class="btn btn-primary">Atualizar</button>
-  <a class="btn btn-secondary" href="{{ route('usuarios.index') }}">Voltar</a>
+<h3 class="text-success fw-bold mb-3">✏️ Editar Usuário</h3>
+
+<form action="{{ route('usuarios.update', $usuario->id) }}" method="POST">
+    @csrf @method('PUT')
+    <div class="mb-3">
+        <label class="form-label">Nome</label>
+        <input type="text" name="nome" class="form-control" value="{{ $usuario->nome }}" required>
+    </div>
+    <div class="mb-3">
+        <label class="form-label">Email</label>
+        <input type="email" name="email" class="form-control" value="{{ $usuario->email }}" required>
+    </div>
+    <button type="submit" class="btn btn-success">Atualizar</button>
+    <a href="{{ route('usuarios.index') }}" class="btn btn-secondary">Voltar</a>
 </form>
 @endsection

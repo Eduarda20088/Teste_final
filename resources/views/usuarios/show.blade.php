@@ -1,15 +1,13 @@
-@extends('layouts.app')
-@section('title','Detalhes do Usuário')
+@extends('layout.app')
+
 @section('content')
-<div class="card p-3">
-  <h3>{{ $usuario->nome }}</h3>
-  <p><b>Email:</b> {{ $usuario->email }}</p>
-  @if($usuario->foto)
-    <img src="{{ asset('storage/'.$usuario->foto) }}" width="200" class="rounded shadow">
-  @endif
-  <div class="mt-3">
-    <a href="{{ route('usuarios.edit',$usuario->id) }}" class="btn btn-primary">Editar</a>
-    <a href="{{ route('usuarios.index') }}" class="btn btn-secondary">Voltar</a>
-  </div>
+<h3 class="text-success fw-bold mb-3">👤 Detalhes do Usuário</h3>
+
+<div class="card shadow-sm">
+    <div class="card-body">
+        <p><strong>Nome:</strong> {{ $usuario->nome }}</p>
+        <p><strong>Email:</strong> {{ $usuario->email }}</p>
+        <a href="{{ route('usuarios.index') }}" class="btn btn-secondary">Voltar</a>
+    </div>
 </div>
 @endsection

@@ -1,19 +1,18 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Middleware;
 
+use Closure;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Session;
 
-class DashboardController extends Controller
+class CheckSession
 {
-    public function index()
+    public function handle(Request $request, Closure $next)
     {
-        // Verifica se o usuário está logado
         if (!Session::has('usuario')) {
             return redirect()->route('login');
         }
-
-        return view('dashboard');
+        return $next($request);
     }
 }
