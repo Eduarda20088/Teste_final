@@ -1,142 +1,94 @@
-@extends('layout.app')
+@extends('layouts.app')
+
+@section('title', 'Sabor do Brasil')
 
 @section('content')
-<div class="container-fluid mt-3">
+<div class="min-h-screen bg-gray-100 flex flex-col">
 
-    {{-- Título topo --}}
-    <div class="text-center mb-4">
-        <h1 class="fw-bold text-success">🍽️ Sabor do Brasil</h1>
-        <hr>
-    </div>
-
-    <div class="row">
-
-        {{-- COLUNA ESQUERDA - PERFIL DO USUÁRIO --}}
-        <div class="col-md-3">
-            <div class="card shadow-sm p-3">
-                <div class="text-center">
-                    @php
-                        $usuarioNome = session('usuario_nome');
-                        $usuario = \App\Models\Usuario::find(session('usuario_id'));
-                    @endphp
-
-                    @if ($usuario && $usuario->foto)
-                        <img src="{{ asset('storage/'.$usuario->foto) }}" class="rounded-circle mb-3" width="120" height="120">
-                    @else
-                        <img src="https://via.placeholder.com/120" class="rounded-circle mb-3">
-                    @endif
-
-                    <h4 class="fw-bold">{{ $usuarioNome }}</h4>
-                </div>
-                <hr>
-                <a href="{{ route('logout') }}" class="btn btn-outline-danger w-100">Sair</a>
-            </div>
+    <!-- Header -->
+    <header class="bg-white shadow-md py-4">
+        <div class="container mx-auto flex justify-between items-center px-4">
+            <h1 class="text-2xl font-bold text-red-700 flex items-center gap-2">
+                🍲 Sabor do Brasil
+            </h1>
+            <a href="{{ route('login') }}"
+               class="bg-red-600 text-white px-4 py-2 rounded hover:bg-red-700 transition">
+                Entrar
+            </a>
         </div>
+    </header>
 
-        {{-- COLUNA CENTRAL - PUBLICAÇÕES --}}
-        <div class="col-md-6">
-            <h4 class="text-center mb-3 fw-semibold">Publicações recentes</h4>
+    <!-- Conteúdo Principal -->
+    <main class="flex-grow container mx-auto py-8 px-4">
+        <h2 class="text-xl font-semibold mb-6 text-gray-800">Publicações</h2>
 
-            @php
-                $publicacoes = \App\Models\Publicacao::with('empresa')->orderBy('created_at', 'desc')->get();
-            @endphp
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
 
-            @foreach ($publicacoes as $pub)
-                <div class="card mb-4 shadow-sm">
-                    @if ($pub->imagem)
-                        <img src="{{ asset('storage/'.$pub->imagem) }}" class="card-img-top" alt="{{ $pub->titulo }}">
-                    @endif
-                    <div class="card-body">
-                        <h5 class="card-title fw-bold">{{ $pub->titulo }}</h5>
-                        <p class="card-text mb-1">
-                            <strong>Empresa:</strong> {{ $pub->empresa->nome ?? 'N/A' }}<br>
-                            <strong>Local:</strong> {{ $pub->local }} - {{ $pub->cidade }}
-                        </p>
-
-                        {{-- Botões de interação --}}
-                        <div class="d-flex align-items-center mt-3">
-                            <form method="POST" action="{{ route('likes.store') }}" class="me-2">
-                                @csrf
-                                <input type="hidden" name="publicacao_id" value="{{ $pub->id }}">
-                                <button class="btn btn-sm btn-outline-success">👍 Curtir</button>
-                            </form>
-
-                            <form method="POST" action="{{ route('deslikes.store') }}" class="me-2">
-                                @csrf
-                                <input type="hidden" name="publicacao_id" value="{{ $pub->id }}">
-                                <button class="btn btn-sm btn-outline-danger">👎 Descurtir</button>
-                            </form>
-
-                            <button class="btn btn-sm btn-outline-primary" data-bs-toggle="collapse" data-bs-target="#comentarios-{{ $pub->id }}">
-                                💬 Comentar
-                            </button>
-                        </div>
-
-                        {{-- Área de comentários --}}
-                        <div class="collapse mt-3" id="comentarios-{{ $pub->id }}">
-                            <form method="POST" action="{{ route('comentarios.store') }}">
-                                @csrf
-                                <input type="hidden" name="publicacao_id" value="{{ $pub->id }}">
-                                <textarea name="texto" class="form-control mb-2" placeholder="Escreva um comentário..." required></textarea>
-                                <button class="btn btn-sm btn-primary">Enviar</button>
-                            </form>
-
-                            <hr>
-                            @php
-                                $comentarios = \App\Models\Comentario::where('publicacao_id', $pub->id)
-                                    ->with('usuario')
-                                    ->orderBy('criado_em', 'desc')
-                                    ->get();
-                            @endphp
-
-                            @foreach ($comentarios as $coment)
-                                <div class="mb-2">
-                                    <strong>{{ $coment->usuario->nome ?? 'Usuário' }}:</strong>
-                                    <span>{{ $coment->texto }}</span>
-                                </div>
-                            @endforeach
+            <!-- Card 1 -->
+            <div class="bg-white rounded-lg shadow-md overflow-hidden">
+                <img src="C:\Users\ALUNO_18\Downloads\Feijoada.jpg"
+                     alt="Prato 01" class="w-full h-48 object-cover">
+                <div class="p-4">
+                    <h3 class="text-lg font-bold mb-2">Título do prato 01</h3>
+                    <p class="text-sm text-gray-600 mb-2">Local 01 - Maceió/AL</p>
+                    <div class="flex items-center justify-between text-gray-700 text-sm mt-3">
+                        <div class="flex items-center gap-3">
+                            <span>👍 9</span>
+                            <span>👎 12</span>
+                            <span>💬 2</span>
                         </div>
                     </div>
                 </div>
-            @endforeach
-        </div>
-
-        {{-- COLUNA DIREITA - EMPRESAS E AVALIAÇÕES --}}
-        <div class="col-md-3">
-            <div class="card shadow-sm p-3">
-                <h5 class="fw-bold mb-3 text-center">Empresas</h5>
-                @php
-                    $empresas = \App\Models\Empresa::orderBy('nome')->get();
-                @endphp
-                @foreach ($empresas as $empresa)
-                    <div class="mb-3">
-                        <h6 class="fw-semibold">{{ $empresa->nome }}</h6>
-                        @if ($empresa->imagem)
-                            <img src="{{ asset('storage/'.$empresa->imagem) }}" class="img-fluid rounded mb-2">
-                        @endif
-                        <p class="small">{{ $empresa->descricao }}</p>
-
-                        {{-- Avaliações --}}
-                        <form method="POST" action="{{ route('avaliacoes.store') }}">
-                            @csrf
-                            <input type="hidden" name="empresa_id" value="{{ $empresa->id }}">
-                            <select name="nota" class="form-select form-select-sm mb-2" required>
-                                <option value="">Nota</option>
-                                <option value="1">⭐ 1</option>
-                                <option value="2">⭐⭐ 2</option>
-                                <option value="3">⭐⭐⭐ 3</option>
-                                <option value="4">⭐⭐⭐⭐ 4</option>
-                                <option value="5">⭐⭐⭐⭐⭐ 5</option>
-                            </select>
-                            <textarea name="comentario" class="form-control form-control-sm mb-2" placeholder="Comentário opcional"></textarea>
-                            <button class="btn btn-sm btn-success w-100">Avaliar</button>
-                        </form>
-                        <hr>
-                    </div>
-                @endforeach
             </div>
-        </div>
 
-    </div>
+            <!-- Card 2 -->
+            <div class="bg-white rounded-lg shadow-md overflow-hidden">
+                <img src="https://cdn.pixabay.com/photo/2017/04/04/17/56/brazilian-food-2202053_1280.jpg"
+                     alt="Prato 02" class="w-full h-48 object-cover">
+                <div class="p-4">
+                    <h3 class="text-lg font-bold mb-2">Título do prato 02</h3>
+                    <p class="text-sm text-gray-600 mb-2">Local 02 - Recife/PE</p>
+                    <div class="flex items-center justify-between text-gray-700 text-sm mt-3">
+                        <div class="flex items-center gap-3">
+                            <span>👍 6</span>
+                            <span>👎 1</span>
+                            <span>💬 10</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Card 3 -->
+            <div class="bg-white rounded-lg shadow-md overflow-hidden">
+                <img src="https://cdn.pixabay.com/photo/2017/03/10/12/44/food-2130180_1280.jpg"
+                     alt="Prato 03" class="w-full h-48 object-cover">
+                <div class="p-4">
+                    <h3 class="text-lg font-bold mb-2">Título do prato 03</h3>
+                    <p class="text-sm text-gray-600 mb-2">Local 03 - Salvador/BA</p>
+                    <div class="flex items-center justify-between text-gray-700 text-sm mt-3">
+                        <div class="flex items-center gap-3">
+                            <span>👍 12</span>
+                            <span>👎 2</span>
+                            <span>💬 2</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </main>
+
+    <!-- Rodapé -->
+    <footer class="bg-gray-900 text-white py-4 mt-8">
+        <div class="container mx-auto text-center text-sm">
+            <div class="flex justify-center gap-4 mb-2 text-lg">
+                <a href="#" class="hover:text-red-400"><i class="fa-brands fa-facebook"></i></a>
+                <a href="#" class="hover:text-red-400"><i class="fa-brands fa-instagram"></i></a>
+                <a href="#" class="hover:text-red-400"><i class="fa-brands fa-twitter"></i></a>
+                <a href="#" class="hover:text-red-400"><i class="fa-brands fa-youtube"></i></a>
+            </div>
+            <p>Sabor do Brasil — Copyright © 2024</p>
+        </div>
+    </footer>
 </div>
 @endsection

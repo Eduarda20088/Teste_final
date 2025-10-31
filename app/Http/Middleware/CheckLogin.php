@@ -6,13 +6,14 @@ use Closure;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Session;
 
-class CheckSession
+class CheckLogin
 {
     public function handle(Request $request, Closure $next)
     {
-        if (!Session::has('usuario')) {
+        if (!Session::has('usuario_id')) {
             return redirect()->route('login');
         }
+
         return $next($request);
     }
 }

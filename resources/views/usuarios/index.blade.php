@@ -1,4 +1,4 @@
-@extends('layout.app')
+@extends('layouts.app')
 
 @section('content')
 <h3 class="text-success fw-bold mb-3">👤 Lista de Usuários</h3>

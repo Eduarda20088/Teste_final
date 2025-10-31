@@ -2,18 +2,14 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Session;
+use App\Models\Publicacao;
 
 class DashboardController extends Controller
 {
     public function index()
     {
-        // Verifica se o usuário está logado
-        if (!Session::has('usuario')) {
-            return redirect()->route('login');
-        }
-
-        return view('dashboard');
+        $publicacoes = Publicacao::with(['empresa', 'likes', 'deslikes', 'comentarios'])->latest()->get();
+        return view('dashboard', compact('publicacoes'));
     }
 }
