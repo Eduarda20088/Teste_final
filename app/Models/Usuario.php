@@ -2,34 +2,21 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
 class Usuario extends Model
 {
-    use HasFactory;
-
     protected $table = 'usuarios';
-    protected $fillable = ['nome', 'email', 'senha', 'avatar'];
+    protected $fillable = ['nome', 'email', 'senha', 'foto'];
     protected $hidden = ['senha'];
 
-    public function comentarios()
+    public function publicacoes()
     {
-        return $this->hasMany(Comentario::class);
+        return $this->hasMany(Publicacao::class, 'usuario_id');
     }
 
-    public function likes()
+    public function getFotoUrlAttribute()
     {
-        return $this->hasMany(Like::class);
-    }
-
-    public function deslikes()
-    {
-        return $this->hasMany(Deslike::class);
-    }
-
-    public function avaliacoes()
-    {
-        return $this->hasMany(Avaliacao::class);
+        return $this->foto ? asset('storage/' . $this->foto) : asset('images/default-user.png');
     }
 }

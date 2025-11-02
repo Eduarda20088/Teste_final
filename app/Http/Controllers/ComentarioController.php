@@ -10,15 +10,12 @@ class ComentarioController extends Controller
 {
     public function store(Request $request)
     {
-        $request->validate(['texto' => 'required']);
-        $usuario = Session::get('usuario');
-
+        $request->validate(['conteudo' => 'required']);
         Comentario::create([
-            'texto' => $request->texto,
-            'usuario_id' => $usuario->id,
-            'publicacao_id' => $request->publicacao_id
+            'usuario_id' => Session::get('usuario_id'),
+            'publicacao_id' => $request->publicacao_id,
+            'conteudo' => $request->conteudo,
         ]);
-
-        return response()->json(['sucesso' => true]);
+        return redirect()->back();
     }
 }

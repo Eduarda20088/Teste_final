@@ -2,33 +2,30 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
 class Publicacao extends Model
 {
-    use HasFactory;
-
     protected $table = 'publicacoes';
-    protected $fillable = ['titulo', 'imagem', 'local', 'cidade', 'empresa_id'];
+    protected $fillable = ['usuario_id', 'conteudo', 'imagem'];
 
-    public function empresa()
+    public function usuario()
     {
-        return $this->belongsTo(Empresa::class);
+        return $this->belongsTo(Usuario::class, 'usuario_id');
     }
 
     public function comentarios()
     {
-        return $this->hasMany(Comentario::class);
+        return $this->hasMany(Comentario::class, 'publicacao_id');
     }
 
     public function likes()
     {
-        return $this->hasMany(Like::class);
+        return $this->hasMany(Like::class, 'publicacao_id');
     }
 
     public function deslikes()
     {
-        return $this->hasMany(Deslike::class);
+        return $this->hasMany(Deslike::class, 'publicacao_id');
     }
 }

@@ -9,7 +9,10 @@ class DashboardController extends Controller
 {
     public function index()
     {
-        $publicacoes = Publicacao::with(['empresa', 'likes', 'deslikes', 'comentarios'])->latest()->get();
+        $publicacoes = Publicacao::with(['usuario', 'comentarios.usuario', 'likes', 'deslikes'])
+            ->orderBy('created_at', 'desc')
+            ->get();
+
         return view('dashboard', compact('publicacoes'));
     }
 }

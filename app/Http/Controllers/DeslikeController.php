@@ -4,24 +4,28 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Deslike;
+use App\Models\Like;
 use Illuminate\Support\Facades\Session;
 
 class DeslikeController extends Controller
 {
     public function store(Request $request)
     {
-        $usuario = Session::get('usuario');
-        $jaTem = Deslike::where('usuario_id', $usuario->id)
-                        ->where('publicacao_id', $request->publicacao_id)
-                        ->first();
+        $usuarioId = Session::get('usuario_id');
+        $publicacaoId = $request->publicacao_id;
 
-        if (!$jaTem) {
-            Deslike::create([
-                'usuario_id' => $usuario->id,
-                'publicacao_id' => $request->publicacao_id
-            ]);
+        Like::where('usuario_id', $usuarioId)->where('publicacao_id', $publicacaoId)->delete();
+
+        $existe = Deslike::where('usuario_id', $usuarioId)
+            ->where('publicacao_id', $publicacaoId)
+            ->first();
+
+        if ($existe) {
+            $existe->delete();
+        } else {
+            Deslike::create(['usuario_id' => $usuarioId, 'publicacao_id' => $publicacaoId]);
         }
 
-        return response()->json(['sucesso' => true]);
+        return redirect()->back();
     }
 }
