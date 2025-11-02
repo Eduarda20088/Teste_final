@@ -1,26 +1,13 @@
-<!DOCTYPE html>
-<html lang="pt-br">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>@yield('title', 'Sabor do Brasil')</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
-</head>
-<body class="bg-light">
-
-    {{-- Navbar simples --}}
-    <nav class="navbar navbar-expand-lg navbar-dark bg-success">
-        <div class="container">
-            <a class="navbar-brand fw-bold" href="{{ route('dashboard') }}">Sabor do Brasil</a>
-            <div class="d-flex">
-                <a href="{{ route('logout') }}" class="btn btn-outline-light btn-sm">Sair</a>
-            </div>
-        </div>
-    </nav>
-
-    <main>
-        @yield('content')
-    </main>
-
-</body>
-</html>
+@extends('layouts.app')
+@section('content')
+<div class="max-w-md mx-auto bg-white p-6 rounded shadow">
+<h3 class="text-xl font-bold mb-3">Entrar</h3>
+@if(session('erro'))<div class="bg-red-100 p-2 text-red-700 mb-2">{{ session('erro') }}</div>@endif
+<form action="{{ route('login.post') }}" method="POST">@csrf
+<input type="email" name="email" class="w-full border p-2 mb-2" placeholder="Email" required>
+<input type="password" name="senha" class="w-full border p-2 mb-2" placeholder="Senha" required>
+<button class="bg-red-600 text-white px-4 py-2 rounded">Entrar</button>
+</form>
+<p class="mt-3 text-sm">Não tem conta? <a href="{{ route('register') }}" class="text-red-600">Cadastrar</a></p>
+</div>
+@endsection

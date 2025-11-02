@@ -1,94 +1,73 @@
 @extends('layouts.app')
-
-@section('title', 'Sabor do Brasil')
-
 @section('content')
-<div class="min-h-screen bg-gray-100 flex flex-col">
-
-    <!-- Header -->
-    <header class="bg-white shadow-md py-4">
-        <div class="container mx-auto flex justify-between items-center px-4">
-            <h1 class="text-2xl font-bold text-red-700 flex items-center gap-2">
-                🍲 Sabor do Brasil
-            </h1>
-            <a href="{{ route('login') }}"
-               class="bg-red-600 text-white px-4 py-2 rounded hover:bg-red-700 transition">
-                Entrar
-            </a>
-        </div>
-    </header>
-
-    <!-- Conteúdo Principal -->
-    <main class="flex-grow container mx-auto py-8 px-4">
-        <h2 class="text-xl font-semibold mb-6 text-gray-800">Publicações</h2>
-
-        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-
-            <!-- Card 1 -->
-            <div class="bg-white rounded-lg shadow-md overflow-hidden">
-                <img src="C:\Users\ALUNO_18\Downloads\Feijoada.jpg"
-                     alt="Prato 01" class="w-full h-48 object-cover">
-                <div class="p-4">
-                    <h3 class="text-lg font-bold mb-2">Título do prato 01</h3>
-                    <p class="text-sm text-gray-600 mb-2">Local 01 - Maceió/AL</p>
-                    <div class="flex items-center justify-between text-gray-700 text-sm mt-3">
-                        <div class="flex items-center gap-3">
-                            <span>👍 9</span>
-                            <span>👎 12</span>
-                            <span>💬 2</span>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Card 2 -->
-            <div class="bg-white rounded-lg shadow-md overflow-hidden">
-                <img src="https://cdn.pixabay.com/photo/2017/04/04/17/56/brazilian-food-2202053_1280.jpg"
-                     alt="Prato 02" class="w-full h-48 object-cover">
-                <div class="p-4">
-                    <h3 class="text-lg font-bold mb-2">Título do prato 02</h3>
-                    <p class="text-sm text-gray-600 mb-2">Local 02 - Recife/PE</p>
-                    <div class="flex items-center justify-between text-gray-700 text-sm mt-3">
-                        <div class="flex items-center gap-3">
-                            <span>👍 6</span>
-                            <span>👎 1</span>
-                            <span>💬 10</span>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Card 3 -->
-            <div class="bg-white rounded-lg shadow-md overflow-hidden">
-                <img src="https://cdn.pixabay.com/photo/2017/03/10/12/44/food-2130180_1280.jpg"
-                     alt="Prato 03" class="w-full h-48 object-cover">
-                <div class="p-4">
-                    <h3 class="text-lg font-bold mb-2">Título do prato 03</h3>
-                    <p class="text-sm text-gray-600 mb-2">Local 03 - Salvador/BA</p>
-                    <div class="flex items-center justify-between text-gray-700 text-sm mt-3">
-                        <div class="flex items-center gap-3">
-                            <span>👍 12</span>
-                            <span>👎 2</span>
-                            <span>💬 2</span>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-        </div>
-    </main>
-
-    <!-- Rodapé -->
-    <footer class="bg-gray-900 text-white py-4 mt-8">
-        <div class="container mx-auto text-center text-sm">
-            <div class="flex justify-center gap-4 mb-2 text-lg">
-                <a href="#" class="hover:text-red-400"><i class="fa-brands fa-facebook"></i></a>
-                <a href="#" class="hover:text-red-400"><i class="fa-brands fa-instagram"></i></a>
-                <a href="#" class="hover:text-red-400"><i class="fa-brands fa-twitter"></i></a>
-                <a href="#" class="hover:text-red-400"><i class="fa-brands fa-youtube"></i></a>
-            </div>
-            <p>Sabor do Brasil — Copyright © 2024</p>
-        </div>
-    </footer>
+<div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
+<aside class="lg:col-span-3 hidden lg:block">
+<div class="bg-white p-4 rounded shadow">
+<div class="flex items-center gap-3">
+<img src="{{ session('usuario_foto') ? asset('storage/'.session('usuario_foto')) :
+asset('images/default-user.png') }}" class="w-16 h-16 rounded-full">
+<div>
+<div class="font-bold">{{ session('usuario_nome') }}</div>
+<div class="text-sm text-gray-500">Membro</div>
+</div>
+</div>
+</div>
+</aside>
+<section class="lg:col-span-6">
+<h2 class="text-xl font-semibold mb-4">Publicações</h2>
+@foreach($publicacoes as $pub)
+<article id="pub-{{ $pub->id }}" class="bg-white rounded shadow mb-6 overflow-hidden">
+@if($pub->imagem)
+<img src="{{ asset('storage/'.$pub->imagem) }}" class="w-full h-56 object-cover">
+@endif
+<div class="p-4">
+<div class="flex justify-between items-start">
+<div>
+<h3 class="font-bold">{{ $pub->titulo }}</h3>
+<div class="text-sm text-gray-600">{{ $pub->local }} — {{ $pub->cidade }}</div>
+</div>
+<div class="text-xs text-gray-400">{{ $pub->created_at->format('d/m/Y H:i') }}</div>
+</div>
+<div class="flex items-center gap-3 mt-4">
+<button class="like-btn px-3 py-1 rounded bg-green-50" data-id="{{ $pub->id }}">■ <span class="like-count">{{
+$pub->likes->count() }}</span></button>
+<button class="deslike-btn px-3 py-1 rounded bg-red-50" data-id="{{ $pub->id }}">■ <span class="deslike-count">{{
+$pub->deslikes->count() }}</span></button>
+<button class="toggle-coment-btn px-3 py-1 rounded bg-blue-50" data-id="{{ $pub->id }}">■ <span
+class="coment-count">{{ $pub->comentarios->count() }}</span></button>
+</div>
+<div class="coment-area mt-4 hidden" id="coment-area-{{ $pub->id }}">
+<div class="existing-comments">
+@foreach($pub->comentarios as $com)
+<div class="mb-2 text-sm">
+<strong>{{ $com->usuario->nome ?? 'Usuário' }}:</strong> {{ $com->texto }}
+<div class="text-xs text-gray-400">{{ $com->criado_em }}</div>
+</div>
+@endforeach
+</div>
+@if(session('usuario_id'))
+<form class="coment-form mt-2" data-id="{{ $pub->id }}">
+@csrf
+<textarea name="texto" rows="2" class="w-full border rounded p-2" placeholder="Escreva um
+comentário..."></textarea>
+<div class="flex justify-end mt-2">
+<button class="bg-green-700 text-white px-3 py-1 rounded">Comentar</button>
+</div>
+</form>
+@else
+<div class="text-sm text-gray-600">Faça login para comentar.</div>
+@endif
+</div>
+</div>
+</article>
+@endforeach
+</section>
+<aside class="lg:col-span-3 hidden lg:block">
+<div class="bg-white p-4 rounded shadow">
+<h4 class="font-semibold">Sobre</h4>
+<p class="text-sm text-gray-600 mt-2">Sabor do Brasil — compartilhe pratos e avaliações.</p>
+</div>
+</aside>
 </div>
 @endsection
+
