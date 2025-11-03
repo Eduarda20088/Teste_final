@@ -2,21 +2,23 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
 class Usuario extends Model
 {
+    use HasFactory;
+
     protected $table = 'usuarios';
     protected $fillable = ['nome', 'email', 'senha', 'foto'];
-    protected $hidden = ['senha'];
 
     public function publicacoes()
     {
         return $this->hasMany(Publicacao::class, 'usuario_id');
     }
 
-    public function getFotoUrlAttribute()
+    public function comentarios()
     {
-        return $this->foto ? asset('storage/' . $this->foto) : asset('images/default-user.png');
+        return $this->hasMany(Comentario::class, 'usuario_id');
     }
 }

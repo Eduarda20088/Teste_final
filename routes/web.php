@@ -1,28 +1,10 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\UserAuthController;
-use App\Http\Controllers\DashboardController;
-use App\Http\Controllers\ComentarioController;
-use App\Http\Controllers\LikeController;
-use App\Http\Controllers\DeslikeController;
+use App\Http\Controllers\PublicacaoController;
 
-// Página inicial
-Route::get('/', function () {
-    return redirect()->route('login');
-});
-
-// Autenticação
-Route::get('/login', [UserAuthController::class, 'showLogin'])->name('login');
-Route::post('/login', [UserAuthController::class, 'login'])->name('login.post');
-Route::get('/register', [UserAuthController::class, 'showRegister'])->name('register');
-Route::post('/register', [UserAuthController::class, 'register'])->name('register.post');
-Route::get('/logout', [UserAuthController::class, 'logout'])->name('logout');
-
-// Área protegida
-Route::middleware(\App\Http\Middleware\CheckLogin::class)->group(function () {
-    Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
-    Route::post('/likes', [LikeController::class, 'store'])->name('likes.store');
-    Route::post('/deslikes', [DeslikeController::class, 'store'])->name('deslikes.store');
-    Route::post('/comentarios', [ComentarioController::class, 'store'])->name('comentarios.store');
-});
+Route::get('/', [PublicacaoController::class, 'index'])->name('home');
+Route::post('/publicar', [PublicacaoController::class, 'store'])->name('publicar');
+Route::post('/like', [PublicacaoController::class, 'like'])->name('like');
+Route::post('/deslike', [PublicacaoController::class, 'deslike'])->name('deslike');
+Route::post('/comentar', [PublicacaoController::class, 'comentar'])->name('comentar');
