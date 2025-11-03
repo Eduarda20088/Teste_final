@@ -2,23 +2,17 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
 class Comentario extends Model
 {
-    use HasFactory;
-
     protected $table = 'comentarios';
-    protected $fillable = ['publicacao_id', 'usuario_id', 'conteudo'];
+    protected $fillable = ['publicacao_id', 'usuario_id', 'conteudo', 'criado_em'];
+
+    public $timestamps = false; // se sua migration usa 'criado_em' em vez de created_at
 
     public function usuario()
     {
         return $this->belongsTo(Usuario::class, 'usuario_id');
-    }
-
-    public function publicacao()
-    {
-        return $this->belongsTo(Publicacao::class, 'publicacao_id');
     }
 }

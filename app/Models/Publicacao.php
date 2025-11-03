@@ -2,13 +2,10 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
 class Publicacao extends Model
 {
-    use HasFactory;
-
     protected $table = 'publicacoes';
     protected $fillable = ['usuario_id', 'conteudo', 'imagem', 'likes', 'deslikes'];
 
@@ -21,4 +18,10 @@ class Publicacao extends Model
     {
         return $this->hasMany(Comentario::class, 'publicacao_id');
     }
+
+    public function getImagemUrlAttribute()
+    {
+        return $this->imagem ? asset('storage/publicacoes/'.$this->imagem) : null;
+    }
 }
+
